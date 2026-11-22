@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self'"
+    />
+    <title>B站字幕提取器</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">B站字幕 <span class="arrow">→</span> Obsidian</div>
+      <div class="urlbar">
+        <input id="url" type="text" spellcheck="false" placeholder="粘贴视频链接 / BV号 / av号 / b23.tv 短链，回车解析" />
+        <button id="parseBtn" class="primary">解析</button>
+      </div>
+      <div class="account">
+        <div id="loginOff" class="login-state">
+          <span class="hint">未登录 · 仅能获取 CC 字幕</span>
+          <button id="loginBtn" class="ghost">扫码登录</button>
+        </div>
+        <div id="loginOn" class="login-state hidden">
+          <img id="userFace" class="face" alt="" />
+          <span id="userName" class="uname"></span>
+          <button id="logoutBtn" class="ghost small">退出</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <aside class="card left">
+        <div id="videoEmpty" class="empty">输入链接并解析后，这里显示视频与分P信息</div>
+        <div id="videoInfo" class="video-info hidden">
+          <img id="cover" class="cover" alt="" />
+          <h2 id="vtitle" class="vtitle"></h2>
+          <div class="meta">
+            <span id="vowner"></span>
+            <span id="vpagemeta"></span>
+          </div>
+          <p id="vdesc" class="vdesc"></p>
+          <div class="section-title">分P <span id="pageCount" class="count"></span></div>
+          <div id="pages" class="pages"></div>
+        </div>
+      </aside>
+
+      <section class="card right">
+        <div class="subtitle-head">
+          <div class="subtitle-title">
+            字幕预览
+            <span id="fmtBadge" class="badge">时间戳</span>
+            <span id="subMeta" class="sub-meta"></span>
+          </div>
+          <div class="tools">
+            <button id="retryBtn" class="ghost small" disabled>重新获取</button>
+            <select id="lang" class="select" disabled></select>
+            <button id="copyBtn" class="ghost small" disabled>复制</button>
+          </div>
+        </div>
+
+        <div class="subtitle-body">
+          <div id="subEmpty" class="empty">选择分P后显示字幕预览</div>
+          <pre id="subContent" class="md-preview hidden"></pre>
+        </div>
+
+        <div class="export-bar">
+          <div class="row">
+            <label class="radio"><input type="radio" name="fmt" value="timestamp" checked /><span>时间戳逐句</span></label>
+            <label class="radio"><input type="radio" name="fmt" value="plain" /><span>纯文本段落</span></label>
+            <label class="check"><input id="fm" type="checkbox" checked /><span>含 frontmatter</span></label>
+          </div>
+          <div class="row">
+            <input id="dir" class="dir-input" type="text" readonly placeholder="请选择 Obsidian 仓库中的保存目录" />
+            <button id="pickDir" class="ghost">选择文件夹</button>
+          </div>
+          <div class="row">
+            <span class="filename" id="filename">—</span>
+            <button id="exportBtn" class="primary" disabled>导出</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+
+    <div id="qrModal" class="modal hidden">
+      <div class="modal-card">
+        <h3>扫码登录 B 站</h3>
+        <img id="qrImg" class="qr-img" alt="登录二维码" />
+        <p id="qrStatus" class="modal-desc">请使用 B 站手机客户端扫码</p>
+        <div class="modal-actions">
+          <button id="qrCookieBtn" class="link-btn">无法扫码？手动填写 Cookie</button>
+          <button class="ghost" data-close>关闭</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cookieModal" class="modal hidden">
+      <div class="modal-card">
+        <h3>手动填写 Cookie</h3>
+        <p class="modal-desc">
+          可粘贴完整 Cookie，或只粘贴 SESSDATA 的值。浏览器登录 B 站后，在开发者工具 → 网络请求头里可以找到。
+        </p>
+        <textarea id="cookieInput" rows="4" spellcheck="false" placeholder="SESSDATA=xxxx%2Cxxxx; bili_jct=yyyy; DedeUserID=zzzz"></textarea>
+        <div class="modal-actions">
+          <button class="ghost" data-close>取消</button>
+          <button id="cookieSave" class="primary">保存并验证</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
